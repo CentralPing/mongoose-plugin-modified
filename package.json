@@ -4,8 +4,7 @@
   "description": "Mongoose.js plugin to capture document modification timestamp with optional user identifier",
   "main": "modified.js",
   "dependencies": {
-    "lodash-node": "^2.4.1",
-    "mongoose": "^3.8.18"
+    "lodash-node": "^2.4.1"
   },
   "devDependencies": {
     "gulp": "^3.8.10",
