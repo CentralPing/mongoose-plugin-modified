@@ -44,21 +44,16 @@ describe('Mongoose plugin: modified', function () {
       expect(schema.path('modified.date')).toBeDefined();
     });
 
-    it('should add `modified.date` to the schema for single path', function () {
-      expect(function () { schema.plugin(modified, 'name'); }).not.toThrow();
-      expect(schema.path('modified.date')).toBeDefined();
-    });
-
-    it('should add `modified.date` to the schema for paths in array', function () {
-      expect(function () { schema.plugin(modified, ['name.first', 'name.last']); }).not.toThrow();
-      expect(schema.path('modified.date')).toBeDefined();
+    it('should make `modified.by` required by default', function () {
+      expect(function () { schema.plugin(modified, {byRef: 'User'}); }).not.toThrow();
+      expect(schema.path('modified.by').isRequired).toBe(true);
     });
   });
 
   describe('with initial document creation', function () {
     var user;
 
-    it('should compile the model with the created plugin', function () {
+    it('should compile the model with the modified plugin', function () {
       var User;
       var schema = UserSchema();
       schema.plugin(modified);
@@ -85,7 +80,7 @@ describe('Mongoose plugin: modified', function () {
   describe('with document manipulations', function () {
     var User;
 
-    it('should compile the model with the created plugin', function () {
+    it('should compile the model with the modified plugin', function () {
       var schema = UserSchema();
       schema.plugin(modified);
 
@@ -106,13 +101,82 @@ describe('Mongoose plugin: modified', function () {
     });
   });
 
+  describe('with document expirations', function () {
+    var User;
+    var originalTimeout;
+
+    beforeAll(function () {
+      // Need to extend the Jasmine timeout to allow for 60+ seconds
+      // for MongoDB to purge the expired documents
+      // http://docs.mongodb.org/manual/tutorial/expire-data/
+      originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
+    });
+
+    afterAll(function () {
+      jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+    });
+
+    it('should compile the model with the modified plugin', function () {
+      var schema = UserSchema();
+      schema.plugin(modified, {expires: 5});
+      User = model(schema);
+
+      expect(User).toEqual(jasmine.any(Function));
+    });
+
+    it('should not delete unmodified document after expiration', function (done) {
+      User(userData).save(function (err, user) {
+        setTimeout(function () {
+          User.findById(user._id, function (err, user) {
+            expect(err).toBe(null);
+            expect(user).toEqual(jasmine.any(Object));
+          });
+        }, 2500);
+
+        setTimeout(function () {
+          User.findById(user._id, function (err, user) {
+            expect(err).toBe(null);
+            expect(user).toEqual(jasmine.any(Object));
+
+            done();
+          });
+        }, 100000);
+      });
+    });
+
+    it('should delete modified document after expiration', function (done) {
+      User(userData).save(function (err, user) {
+        setTimeout(function () {
+          User.findById(user._id, function (err, user) {
+            expect(err).toBe(null);
+            expect(user).toEqual(jasmine.any(Object));
+
+            // trigger modified date to be set
+            user.username = 'bar';
+            user.save();
+          });
+        }, 2500);
+
+        setTimeout(function () {
+          User.findById(user._id, function (err, user) {
+            expect(err).toBe(null);
+            expect(user).toEqual(jasmine.any(Object));
+
+            done();
+          });
+        }, 100000);
+      });
+    });
+  });
+
   describe('with a specific path', function () {
     var User;
     var user;
 
-    it('should compile the model with the created plugin', function () {
+    it('should compile the model with the modified plugin', function () {
       var schema = UserSchema();
-      schema.plugin(modified, 'name');
+      schema.plugin(modified, {paths: 'name'});
 
       User = model(schema);
       expect(User).toEqual(jasmine.any(Function));
@@ -158,9 +222,9 @@ describe('Mongoose plugin: modified', function () {
     var User;
     var user;
 
-    it('should compile the model with the created plugin', function () {
+    it('should compile the model with the modified plugin', function () {
       var schema = UserSchema();
-      schema.plugin(modified, ['name.first', 'name.last']);
+      schema.plugin(modified, {paths: ['name.first', 'name.last']});
 
       User = model(schema);
       expect(User).toEqual(jasmine.any(Function));
