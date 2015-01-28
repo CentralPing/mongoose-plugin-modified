@@ -17,10 +17,18 @@ var userData = {
 };
 
 describe('Mongoose plugin: modified', function () {
-  it('should connect to test DB', function (done) {
+  beforeAll(function (done) {
     connection = mongoose.createConnection('mongodb://localhost/unit_test');
     connection.once('connected', function () {
       done();
+    });
+  });
+
+  afterAll(function (done) {
+    connection.db.dropDatabase(function (err, result) {
+      connection.close(function () {
+        done();
+      });
     });
   });
 
@@ -199,14 +207,6 @@ describe('Mongoose plugin: modified', function () {
             done();
           });
         });
-      });
-    });
-  });
-
-  it('should drop DB and disconnect', function (done) {
-    connection.db.dropDatabase(function (err, result) {
-      connection.close(function () {
-        done();
       });
     });
   });
