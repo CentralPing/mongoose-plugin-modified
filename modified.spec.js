@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var faker = require('faker');
 var modified = require('./modified');
 var Schema = mongoose.Schema;
 var connection;
@@ -10,28 +11,28 @@ var connection;
 delete require.cache.mongoose;
 
 var userData = {
-  username: 'foo',
-  password: 'password',
-  name: {first: 'Foo', last: 'Bar'},
-  emails: ['foo@example.com']
+  username: faker.internet.userName(),
+  password: faker.internet.password(),
+  name: {first: faker.name.firstName(), last: faker.name.lastName()},
+  emails: [faker.internet.email()]
 };
 
-describe('Mongoose plugin: modified', function () {
-  beforeAll(function (done) {
-    connection = mongoose.createConnection('mongodb://localhost/unit_test');
-    connection.once('connected', function () {
+beforeAll(function (done) {
+  connection = mongoose.createConnection('mongodb://localhost/unit_test');
+  connection.once('connected', function () {
+    done();
+  });
+});
+
+afterAll(function (done) {
+  connection.db.dropDatabase(function (err, result) {
+    connection.close(function () {
       done();
     });
   });
+});
 
-  afterAll(function (done) {
-    connection.db.dropDatabase(function (err, result) {
-      connection.close(function () {
-        done();
-      });
-    });
-  });
-
+describe('Mongoose plugin: modified', function () {
   describe('with plugin declaration', function () {
     var schema;
 
@@ -90,7 +91,7 @@ describe('Mongoose plugin: modified', function () {
 
     it('should update `modified.date` on subsequent saves', function (done) {
       User(userData).save(function (err, user) {
-        user.username = 'bar';
+        user.username = faker.internet.userName();
 
         user.save(function (err, user) {
           expect(user.modified.date).toBeDefined();
@@ -153,7 +154,7 @@ describe('Mongoose plugin: modified', function () {
             expect(user).toEqual(jasmine.any(Object));
 
             // trigger modified date to be set
-            user.username = 'bar';
+            user.username = faker.internet.userName();
             user.save();
           });
         }, 2500);
@@ -170,61 +171,14 @@ describe('Mongoose plugin: modified', function () {
     });
   });
 
-  describe('with a specific path', function () {
-    var User;
-    var user;
-
-    it('should compile the model with the modified plugin', function () {
-      var schema = UserSchema();
-      schema.plugin(modified, {paths: 'name'});
-
-      User = model(schema);
-      expect(User).toEqual(jasmine.any(Function));
-    });
-
-    it('should not update `modified.date` on saves without matched path modified', function (done) {
-      User(userData).save(function (err, user) {
-        user.username = 'bar';
-
-        user.save(function (err, user) {
-          expect(user.modified.date).toBeUndefined();
-          done();
-        });
-      });
-    });
-
-    it('should update `modified.date` on saves with matched path modified', function (done) {
-      User(userData).save(function (err, user) {
-        user.name.first = 'Fah';
-
-        user.save(function (err, user) {
-          expect(user.modified.date).toBeDefined();
-          expect(user.modified.date).toBeGreaterThan(user.created);
-          done();
-        });
-      });
-    });
-
-    it('should update `modified.date` on saves with matched subpath modified', function (done) {
-      User(userData).save(function (err, user) {
-        user.name.last = 'Bah';
-
-        user.save(function (err, user) {
-          expect(user.modified.date).toBeDefined();
-          expect(user.modified.date).toBeGreaterThan(user.created);
-          done();
-        });
-      });
-    });
-  });
-
   describe('with specific paths', function () {
     var User;
     var user;
 
     it('should compile the model with the modified plugin', function () {
       var schema = UserSchema();
-      schema.plugin(modified, {paths: ['name.first', 'name.last']});
+      schema.path('name.first').options.modified = true;
+      schema.plugin(modified);
 
       User = model(schema);
       expect(User).toEqual(jasmine.any(Function));
@@ -232,7 +186,18 @@ describe('Mongoose plugin: modified', function () {
 
     it('should not update `modified.date` on saves without matched path modified', function (done) {
       User(userData).save(function (err, user) {
-        user.username = 'bar';
+        user.username = faker.internet.userName();
+
+        user.save(function (err, user) {
+          expect(user.modified.date).toBeUndefined();
+          done();
+        });
+      });
+    });
+
+    it('should not update `modified.date` on saves without matched path modified', function (done) {
+      User(userData).save(function (err, user) {
+        user.name.last = faker.name.lastName();
 
         user.save(function (err, user) {
           expect(user.modified.date).toBeUndefined();
@@ -243,33 +208,12 @@ describe('Mongoose plugin: modified', function () {
 
     it('should update `modified.date` on saves with matched path modified', function (done) {
       User(userData).save(function (err, user) {
-        user.name.first = 'Fah';
+        user.name.first = faker.name.firstName();
 
         user.save(function (err, user) {
           expect(user.modified.date).toBeDefined();
           expect(user.modified.date).toBeGreaterThan(user.created);
           done();
-        });
-      });
-    });
-
-    it('should update `modified.date` on subsequent saves with matched path modified', function (done) {
-      User(userData).save(function (err, user) {
-        user.name.last = 'Bah';
-
-        user.save(function (err, user) {
-          var date = user.modified.date;
-
-          expect(date).toBeDefined();
-          expect(date).toBeGreaterThan(user.created);
-
-          user.name.first = 'Fah';
-
-          user.save(function (err, user) {
-            expect(user.modified.date).toBeDefined();
-            expect(user.modified.date).toBeGreaterThan(date);
-            done();
-          });
         });
       });
     });

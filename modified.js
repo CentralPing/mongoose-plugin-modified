@@ -4,20 +4,20 @@ var mongoose = require('mongoose');
 module.exports = function lastModifiedPlugin(schema, options) {
   /* jshint eqnull:true */
   options = _.merge({
-    paths: [undefined],
+    optionKey: 'modified',
     datePath: 'modified.date',
     byPath: 'modified.by',
     byRef: undefined,
     expires: undefined
   }, options || {});
 
-  if (!_.isArray(options.paths)) {
-    // if `paths` is undefined, update modified timestamp on any document modification
-    // if `paths` is a string, convert to an array
-    options.paths = [options.paths];
-  }
+  var paths = Object.keys(schema.paths).filter(function (path) {
+    var schemaType = schema.path(path);
 
-  // TODO: possibly check paths array for invalid inputs
+    return schemaType.options && schemaType.options[options.optionKey];
+  });
+
+  if (paths.length === 0) { paths.push(undefined); }
 
   schema.path(options.datePath, {
     type: Date,
@@ -38,7 +38,7 @@ module.exports = function lastModifiedPlugin(schema, options) {
   }
 
   schema.pre('save', function lastModifiedSave(next) {
-    if (!this.isNew && options.paths.some(this.isModified, this)) {
+    if (!this.isNew && paths.some(this.isModified, this)) {
       this.set(options.datePath, Date.now());
     }
 
