@@ -1,6 +1,6 @@
 {
   "name": "mongoose-plugin-modified",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Mongoose.js plugin to capture document modification timestamp with optional user identifier",
   "main": "modified.js",
   "dependencies": {
@@ -27,7 +27,8 @@
   "keywords": [
     "mongoose",
     "plugin",
-    "document creation"
+    "timestamp",
+    "modified"
   ],
   "author": "Jason Cust <jason@centralping.com>",
   "license": "Apache 2.0",

@@ -40,13 +40,46 @@ describe('Mongoose plugin: modified', function () {
       schema = UserSchema();
     });
 
-    it('should add `modified.date` to the schema for all paths', function () {
-      expect(function () { schema.plugin(modified); }).not.toThrow();
-      expect(schema.path('modified.date')).toBeDefined();
+    it('should add `modified.date` and `modified.by` to the schema', function () {
+      schema.plugin(modified);
+      expect(schema.pathType('modified.date')).toBe('real');
+      expect(schema.pathType('modified.by')).toBe('real');
+      expect(schema.path('modified.by').instance).toBe('String');
     });
 
-    it('should make `modified.by` required by default', function () {
-      expect(function () { schema.plugin(modified, {byRef: 'User'}); }).not.toThrow();
+    it('should add `modified.date` and a reference for `modified.by` to the schema', function () {
+      schema.plugin(modified, {byRef: 'User'});
+      expect(schema.pathType('modified.date')).toBe('real');
+      expect(schema.pathType('modified.by')).toBe('real');
+      expect(schema.path('modified.by').instance).toBe('ObjectID');
+    });
+
+    it('should add `modifiedBy` and `modifiedDate` to the schema', function () {
+      schema.plugin(modified, {byPath: 'modifiedBy', datePath: 'modifiedDate'});
+      expect(schema.pathType('modifiedDate')).toBe('real');
+      expect(schema.pathType('modifiedBy')).toBe('real');
+    });
+
+    it('should only add `modified.date` to the schema with `byPath` set to `null`', function () {
+      schema.plugin(modified, {byPath: null});
+      expect(schema.pathType('modified.date')).toBe('real');
+      expect(schema.pathType('modified.by')).toBe('adhocOrUndefined');
+    });
+
+    it('should only add `modified.date` to the schema with `byPath` set to `undefined`', function () {
+      schema.plugin(modified, {byPath: undefined});
+      expect(schema.pathType('modified.date')).toBe('real');
+      expect(schema.pathType('modified.by')).toBe('adhocOrUndefined');
+    });
+
+    it('should only add `modified.date` to the schema with `byPath` set to empty string', function () {
+      schema.plugin(modified, {byPath: ''});
+      expect(schema.pathType('modified.date')).toBe('real');
+      expect(schema.pathType('modified.by')).toBe('adhocOrUndefined');
+    });
+
+    it('should make `modified.by` required with options', function () {
+      schema.plugin(modified, {byOptions: {required: true}});
       expect(schema.path('modified.by').isRequired).toBe(true);
     });
   });
@@ -98,75 +131,6 @@ describe('Mongoose plugin: modified', function () {
           expect(user.modified.date).toBeGreaterThan(user.created);
           done();
         });
-      });
-    });
-  });
-
-  describe('with document expirations', function () {
-    var User;
-    var originalTimeout;
-
-    beforeAll(function () {
-      // Need to extend the Jasmine timeout to allow for 60+ seconds
-      // for MongoDB to purge the expired documents
-      // http://docs.mongodb.org/manual/tutorial/expire-data/
-      originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
-    });
-
-    afterAll(function () {
-      jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
-    });
-
-    it('should compile the model with the modified plugin', function () {
-      var schema = UserSchema();
-      schema.plugin(modified, {expires: 5});
-      User = model(schema);
-
-      expect(User).toEqual(jasmine.any(Function));
-    });
-
-    it('should not delete unmodified document after expiration', function (done) {
-      User(userData).save(function (err, user) {
-        setTimeout(function () {
-          User.findById(user._id, function (err, user) {
-            expect(err).toBe(null);
-            expect(user).toEqual(jasmine.any(Object));
-          });
-        }, 2500);
-
-        setTimeout(function () {
-          User.findById(user._id, function (err, user) {
-            expect(err).toBe(null);
-            expect(user).toEqual(jasmine.any(Object));
-
-            done();
-          });
-        }, 100000);
-      });
-    });
-
-    it('should delete modified document after expiration', function (done) {
-      User(userData).save(function (err, user) {
-        setTimeout(function () {
-          User.findById(user._id, function (err, user) {
-            expect(err).toBe(null);
-            expect(user).toEqual(jasmine.any(Object));
-
-            // trigger modified date to be set
-            user.username = faker.internet.userName();
-            user.save();
-          });
-        }, 2500);
-
-        setTimeout(function () {
-          User.findById(user._id, function (err, user) {
-            expect(err).toBe(null);
-            expect(user).toEqual(jasmine.any(Object));
-
-            done();
-          });
-        }, 100000);
       });
     });
   });
