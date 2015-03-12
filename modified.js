@@ -1,5 +1,5 @@
-var _ = require('lodash-node/modern');
 var mongoose = require('mongoose');
+var _ = require('lodash-node/modern');
 
 module.exports = function lastModifiedPlugin(schema, options) {
   /* jshint eqnull:true */
@@ -21,16 +21,12 @@ module.exports = function lastModifiedPlugin(schema, options) {
   // If no fields are flagged with the optionKey, monitor all fields
   if (paths.length === 0) { paths.push(undefined); }
 
-  schema.path(options.datePath, _.assign({
+  schema.path(options.datePath, _.defaults({
     type: Date
   }, options.dateOptions));
 
-  if (options.expires) {
-    schema.path(options.datePath).expires(options.expires);
-  }
-
   if (options.byPath != null && options.byPath !== '') {
-    schema.path(options.byPath, _.assign(
+    schema.path(options.byPath, _.defaults(
       options.byRef != null ?
         {type: mongoose.Schema.Types.ObjectId, ref: options.byRef} :
         {type: String},
