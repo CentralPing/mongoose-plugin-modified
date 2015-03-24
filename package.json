@@ -17,6 +17,9 @@
     "yargs": "^3.5.3",
     "mongoose": "^4.0.0-rc4"
   },
+  "peerDependencies": {
+    "mongoose": ">=4.0.0-rc4"
+  },
   "scripts": {
     "test": "gulp test"
   },
