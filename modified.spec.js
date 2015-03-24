@@ -48,38 +48,32 @@ describe('Mongoose plugin: modified', function () {
     });
 
     it('should add `modified.date` and a reference for `modified.by` to the schema', function () {
-      schema.plugin(modified, {byRef: 'User'});
+      schema.plugin(modified, {by: {ref: 'User'}});
       expect(schema.pathType('modified.date')).toBe('real');
       expect(schema.pathType('modified.by')).toBe('real');
       expect(schema.path('modified.by').instance).toBe('ObjectID');
     });
 
     it('should add `modifiedBy` and `modifiedDate` to the schema', function () {
-      schema.plugin(modified, {byPath: 'modifiedBy', datePath: 'modifiedDate'});
+      schema.plugin(modified, {by: {path: 'modifiedBy'}, date: {path: 'modifiedDate'}});
       expect(schema.pathType('modifiedDate')).toBe('real');
       expect(schema.pathType('modifiedBy')).toBe('real');
     });
 
-    it('should only add `modified.date` to the schema with `byPath` set to `null`', function () {
-      schema.plugin(modified, {byPath: null});
+    it('should only add `modified.date` to the schema with `by.path` set to `null`', function () {
+      schema.plugin(modified, {by: {path: null}});
       expect(schema.pathType('modified.date')).toBe('real');
       expect(schema.pathType('modified.by')).toBe('adhocOrUndefined');
     });
 
-    it('should only add `modified.date` to the schema with `byPath` set to `undefined`', function () {
-      schema.plugin(modified, {byPath: undefined});
-      expect(schema.pathType('modified.date')).toBe('real');
-      expect(schema.pathType('modified.by')).toBe('adhocOrUndefined');
-    });
-
-    it('should only add `modified.date` to the schema with `byPath` set to empty string', function () {
-      schema.plugin(modified, {byPath: ''});
+    it('should only add `modified.date` to the schema with `by.path` set to empty string', function () {
+      schema.plugin(modified, {by: {path: ''}});
       expect(schema.pathType('modified.date')).toBe('real');
       expect(schema.pathType('modified.by')).toBe('adhocOrUndefined');
     });
 
     it('should make `modified.by` required with options', function () {
-      schema.plugin(modified, {byOptions: {required: true}});
+      schema.plugin(modified, {by: {options: {required: true}}});
       expect(schema.path('modified.by').isRequired).toBe(true);
     });
   });

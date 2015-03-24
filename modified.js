@@ -3,13 +3,17 @@ var _ = require('lodash-node/modern');
 
 module.exports = function lastModifiedPlugin(schema, options) {
   /* jshint eqnull:true */
-  options = _.assign({
+  options = _.merge({
     optionKey: 'modified',
-    datePath: 'modified.date',
-    dateOptions: {},
-    byPath: 'modified.by',
-    byRef: undefined,
-    byOptions: {}
+    date: {
+      path: 'modified.date',
+      options: {}
+    },
+    by: {
+      path: 'modified.by',
+      ref: undefined,
+      options: {}
+    }
   }, options || {});
 
   var paths = Object.keys(schema.paths).filter(function (path) {
@@ -21,23 +25,23 @@ module.exports = function lastModifiedPlugin(schema, options) {
   // If no fields are flagged with the optionKey, monitor all fields
   if (paths.length === 0) { paths.push(undefined); }
 
-  schema.path(options.datePath, _.defaults({
+  schema.path(options.date.path, _.defaults({
     type: Date
-  }, options.dateOptions));
+  }, options.date.options));
 
-  if (options.byPath != null && options.byPath !== '') {
-    schema.path(options.byPath, _.defaults(
-      options.byRef != null ?
-        {type: mongoose.Schema.Types.ObjectId, ref: options.byRef} :
+  if (options.by.path) {
+    schema.path(options.by.path, _.defaults(
+      options.by.ref ?
+        {type: mongoose.Schema.Types.ObjectId, ref: options.by.ref} :
         {type: String},
-      options.byOptions)
+      options.by.options)
     );
   }
 
   schema.pre('save', function lastModifiedSave(next) {
     // check if at least one indicated field has been modified
     if (!this.isNew && paths.some(this.isModified, this)) {
-      this.set(options.datePath, Date.now());
+      this.set(options.date.path, Date.now());
     }
 
     return next();
