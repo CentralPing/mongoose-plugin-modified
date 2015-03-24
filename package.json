@@ -1,11 +1,10 @@
 {
   "name": "mongoose-plugin-modified",
-  "version": "1.4.0-rc1",
+  "version": "1.4.0-rc2",
   "description": "Mongoose.js plugin to capture document modification timestamp with optional user identifier",
   "main": "modified.js",
   "dependencies": {
-    "lodash-node": "^3.5.0",
-    "mongoose": "^4.0.0-rc4"
+    "lodash-node": "^3.5.0"
   },
   "devDependencies": {
     "faker": "^2.1.2",
@@ -15,7 +14,8 @@
     "gulp-jasmine": "^2.0.0",
     "gulp-jshint": "^1.9.2",
     "gulp-todo": "^2.5.0",
-    "yargs": "^3.5.3"
+    "yargs": "^3.5.3",
+    "mongoose": "^4.0.0-rc4"
   },
   "scripts": {
     "test": "gulp test"

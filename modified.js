@@ -1,4 +1,3 @@
-var mongoose = require('mongoose');
 var _ = require('lodash-node/modern');
 
 module.exports = function lastModifiedPlugin(schema, options) {
@@ -32,7 +31,7 @@ module.exports = function lastModifiedPlugin(schema, options) {
   if (options.by.path) {
     schema.path(options.by.path, _.defaults(
       options.by.ref ?
-        {type: mongoose.Schema.Types.ObjectId, ref: options.by.ref} :
+        {type: schema.constructor.Types.ObjectId, ref: options.by.ref} :
         {type: String},
       options.by.options)
     );
