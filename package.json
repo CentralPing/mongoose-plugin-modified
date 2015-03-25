@@ -15,10 +15,10 @@
     "gulp-jshint": "^1.9.2",
     "gulp-todo": "^2.5.0",
     "yargs": "^3.5.3",
-    "mongoose": "^4.0.0-rc4"
+    "mongoose": "^4.0.0"
   },
   "peerDependencies": {
-    "mongoose": ">=4.0.0-rc4"
+    "mongoose": ">=4"
   },
   "scripts": {
     "test": "gulp test"
