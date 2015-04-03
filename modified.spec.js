@@ -176,6 +176,57 @@ describe('Mongoose plugin: modified', function () {
       });
     });
   });
+
+  describe('with `modified.by` required', function () {
+    var User;
+    var user;
+
+    it('should compile the model with the modified plugin', function () {
+      var schema = UserSchema();
+      schema.path('name.first').options.modified = true;
+      schema.plugin(modified, {by: {options: {required: true}}});
+
+      User = model(schema);
+      expect(User).toEqual(jasmine.any(Function));
+    });
+
+    it('should not require `modified.by` on saves without matched path modified', function (done) {
+      User(userData).save(function (err, user) {
+        user.username = faker.internet.userName();
+
+        user.save(function (err, user) {
+          expect(user.modified.date).toBeUndefined();
+          done();
+        });
+      });
+    });
+
+    it('should require `modified.by` on saves with matched path modified', function (done) {
+      User(userData).save(function (err, user) {
+        user.name.first = faker.name.firstName();
+
+        user.save(function (err, user) {
+          expect(err).not.toBe(null);
+          expect(Object.keys(err.errors).sort()).toEqual(['modified.by']);
+          expect(user).toBeUndefined();
+          done();
+        });
+      });
+    });
+
+    it('should update `modified.date` on saves with matched path modified', function (done) {
+      User(userData).save(function (err, user) {
+        user.name.first = faker.name.firstName();
+        user.modified.by = faker.internet.userName();
+
+        user.save(function (err, user) {
+          expect(user.modified.date).toBeDefined();
+          expect(user.modified.date).toBeGreaterThan(user.created);
+          done();
+        });
+      });
+    });
+  });
 });
 
 function model(name, schema) {

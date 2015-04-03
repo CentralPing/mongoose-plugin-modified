@@ -29,6 +29,12 @@ module.exports = function lastModifiedPlugin(schema, options) {
   }, options.date.options));
 
   if (options.by.path) {
+    if (options.by.options.required === true) {
+      options.by.options.required = function requiredCheck(val) {
+        return !this.isNew && this.isModified(options.date.path);
+      };
+    }
+
     schema.path(options.by.path, _.defaults(
       options.by.ref ?
         {type: schema.constructor.Types.ObjectId, ref: options.by.ref} :
@@ -37,7 +43,7 @@ module.exports = function lastModifiedPlugin(schema, options) {
     );
   }
 
-  schema.pre('save', function lastModifiedSave(next) {
+  schema.pre('validate', function lastModifiedSave(next) {
     // check if at least one indicated field has been modified
     if (!this.isNew && paths.some(this.isModified, this)) {
       this.set(options.date.path, Date.now());
