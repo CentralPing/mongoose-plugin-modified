@@ -46,7 +46,12 @@ module.exports = function lastModifiedPlugin(schema, options) {
   schema.pre('validate', function lastModifiedSave(next) {
     // check if at least one indicated field has been modified
     if (!this.isNew && paths.some(this.isModified, this)) {
-      this.set(options.date.path, Date.now());
+      if (options.by.options.required && !this.isModified(options.by.path)) {
+        this.invalidate(options.by.path, 'must be updated with document modifcation');
+      }
+      else {
+        this.set(options.date.path, Date.now());
+      }
     }
 
     return next();

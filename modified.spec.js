@@ -179,7 +179,7 @@ describe('Mongoose plugin: modified', function () {
 
   describe('with `modified.by` required', function () {
     var User;
-    var user;
+    var userObj;
 
     it('should compile the model with the modified plugin', function () {
       var schema = UserSchema();
@@ -190,40 +190,61 @@ describe('Mongoose plugin: modified', function () {
       expect(User).toEqual(jasmine.any(Function));
     });
 
-    it('should not require `modified.by` on saves without matched path modified', function (done) {
+    it('should not require `modified.by` on new documents', function (done) {
       User(userData).save(function (err, user) {
         user.username = faker.internet.userName();
 
         user.save(function (err, user) {
+          expect(err).toBe(null);
           expect(user.modified.date).toBeUndefined();
+          userObj = user;
           done();
         });
+      });
+    });
+
+    it('should not require `modified.by` on saves without matched path modified', function (done) {
+      userObj.name.last = faker.name.firstName();
+
+      userObj.save(function (err, user) {
+        expect(err).toBe(null);
+        expect(user.modified.date).toBeUndefined();
+        userObj = user;
+        done();
       });
     });
 
     it('should require `modified.by` on saves with matched path modified', function (done) {
-      User(userData).save(function (err, user) {
-        user.name.first = faker.name.firstName();
+      userObj.name.first = faker.name.firstName();
 
-        user.save(function (err, user) {
-          expect(err).not.toBe(null);
-          expect(Object.keys(err.errors).sort()).toEqual(['modified.by']);
-          expect(user).toBeUndefined();
-          done();
-        });
+      userObj.save(function (err, user) {
+        expect(err).not.toBe(null);
+        expect(Object.keys(err.errors).sort()).toEqual(['modified.by']);
+        expect(user).toBeUndefined();
+        done();
       });
     });
 
     it('should update `modified.date` on saves with matched path modified', function (done) {
-      User(userData).save(function (err, user) {
-        user.name.first = faker.name.firstName();
-        user.modified.by = faker.internet.userName();
+      userObj.name.first = faker.name.firstName();
+      userObj.modified.by = faker.internet.userName();
 
-        user.save(function (err, user) {
-          expect(user.modified.date).toBeDefined();
-          expect(user.modified.date).toBeGreaterThan(user.created);
-          done();
-        });
+      userObj.save(function (err, user) {
+        expect(user.modified.date).toBeDefined();
+        expect(user.modified.date).toBeGreaterThan(user.created);
+        userObj = user;
+        done();
+      });
+    });
+
+    it('should require `modified.by` to be modified on saves with matched path modified', function (done) {
+      userObj.name.first = faker.name.firstName();
+
+      userObj.save(function (err, user) {
+        expect(err).not.toBe(null);
+        expect(Object.keys(err.errors).sort()).toEqual(['modified.by']);
+        expect(user).toBeUndefined();
+        done();
       });
     });
   });
