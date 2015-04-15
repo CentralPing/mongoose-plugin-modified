@@ -23,24 +23,36 @@ gulp.task('default', function () {
   // place code for your default task here
 });
 
-gulp.task('lint', function (done) {
-  return lint(cliSrc || config.paths.scripts);
+gulp.task('lint', function () {
+  // Check for `test` to ensure both the specified specs
+  // and corresponding scripts are linted
+  var glob = cliSrc ?
+    cliSrc.replace(/\.spec\.js$/, '?(.spec).js') :
+    config.paths.all;
+
+  return lint(glob);
 });
 
-gulp.task('lint:all', function (done) {
-  return lint(config.paths.all);
+gulp.task('lint:scripts', function (done) {
+  return lint(config.paths.scripts);
 });
 
 gulp.task('lint:spec', function (done) {
   return lint(config.paths.specs);
 });
 
-gulp.task('test', ['lint:all'], function (done) {
+gulp.task('test', ['lint'], function (done) {
   return testRunner(cliSrc || config.paths.specs);
 });
 
-gulp.task('watch', ['test:unit'], function (done) {
-  return gulp.watch(cliSrc || config.paths.all, ['test']);
+gulp.task('watch', ['test'], function (done) {
+  // Check to ensure both the specified specs
+  // and corresponding scripts are watched
+  var glob = cliSrc ?
+    cliSrc.replace(/\.spec\.js$/, '?(.spec).js') :
+    config.paths.all;
+
+  return gulp.watch(glob, ['test']);
 });
 
 gulp.task('todo', function (done) {
@@ -65,8 +77,12 @@ gulp.task('todo', function (done) {
 });
 
 function testRunner(src) {
+  if (arguments.length > 1) {
+    src = [].concat([].slice.call(arguments));
+  }
+
   return gulp.src(src)
-    .pipe(gulpIf(isDebug, debug()))
+    .pipe(gulpIf(isDebug, debug({title: 'test:'})))
     .pipe(jasmine({
       verbose: isVerbose,
       includeStackTrace: isStackTrace
@@ -75,7 +91,8 @@ function testRunner(src) {
 
 function lint(src) {
   return gulp.src(src)
-    .pipe(gulpIf(isDebug, debug()))
+    .pipe(gulpIf(isDebug, debug({title: 'lint:'})))
     .pipe(jshint())
-    .pipe(jshint.reporter('default', {verbose: isVerbose}));
+    .pipe(jshint.reporter('default', {verbose: isVerbose}))
+    .pipe(jshint.reporter('fail'));
 }
