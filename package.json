@@ -4,18 +4,21 @@
   "description": "Mongoose.js plugin to capture document modification timestamp with optional user identifier",
   "main": "modified.js",
   "dependencies": {
-    "lodash-node": "^3.6.0"
+    "lodash-node": "^3.8.0"
   },
   "devDependencies": {
     "faker": "^2.1.2",
     "gulp": "^3.8.11",
+    "gulp-concat": "^2.5.2",
     "gulp-debug": "^2.0.1",
     "gulp-if": "^1.2.5",
     "gulp-jasmine": "^2.0.1",
+    "gulp-jsdoc-to-markdown": "^1.1.0",
     "gulp-jshint": "^1.10.0",
-    "gulp-todo": "^2.5.1",
-    "mongoose": "^4.0.1",
-    "yargs": "^3.6.0"
+    "gulp-todo": "^2.6.0",
+    "gulp-util": "^3.0.4",
+    "mongoose": "^4.0.2",
+    "yargs": "^3.8.0"
   },
   "peerDependencies": {
     "mongoose": ">=4"

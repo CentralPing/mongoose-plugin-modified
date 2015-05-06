@@ -8,28 +8,10 @@ A [mongoose.js](https://github.com/LearnBoost/mongoose/) plugin to capture docum
 *The modification date is updated pre-validation if a monitored field has been modified*
 
 ## API Reference
-**Example**  
-```js
-var modifiedPlugin = require('mongoose-plugin-modified');
-var schema = Schema({...});
-schema.plugin(modifiedPlugin[, OPTIONS]);
-```
-<a name="module_mongoose-plugin-modified..options"></a>
-### mongoose-plugin-modified~options
-**Kind**: inner property of <code>[mongoose-plugin-modified](#module_mongoose-plugin-modified)</code>  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| [options] | <code>object</code> |  |  |
-| options.optionKey | <code>string</code> | <code>&quot;modified&quot;</code> | the path options key to mark paths for inclusion in monitoring for modification. If no paths are tagged, document modification is monitored. |
-| [options.date] | <code>object</code> |  | options for configuring the path for storing the date. |
-| options.date.path | <code>string</code> | <code>&quot;modified.date&quot;</code> | the path for storing the modified date. |
-| options.date.options | <code>object</code> |  | property options to set (`type` will always be `Date`). `(e.g. {select: false})` |
-| [options.by] | <code>object</code> |  | options for configuring the path for storing the modifier. |
-| options.by.path | <code>string</code> | <code>&quot;modified.by&quot;</code> | the path for storing the document modifier. |
-| options.by.ref | <code>string</code> |  | the reference model to use `(e.g. {by: {ref: 'ModelRefName'}})` |
-| options.by.options | <code>object</code> |  | property options to set (if not a reference the `type` will always be `String`). `(e.g. {select: false})` |
-
+{{#module name="mongoose-plugin-modified"~}}
+{{>body~}}
+{{>members~}}
+{{/module}}
 
 ## Examples
 

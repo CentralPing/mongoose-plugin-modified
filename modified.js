@@ -1,7 +1,28 @@
 var _ = require('lodash-node/modern');
 
+/**
+ * @module mongoose-plugin-modified
+ * @example
+```js
+var modifiedPlugin = require('mongoose-plugin-modified');
+var schema = Schema({...});
+schema.plugin(modifiedPlugin[, OPTIONS]);
+```
+*/
+
 module.exports = function lastModifiedPlugin(schema, options) {
   /* jshint eqnull:true */
+  /**
+   * @param {object} [options]
+   * @param {string} options.optionKey=modified - the path options key to mark paths for inclusion in monitoring for modification. If no paths are tagged, document modification is monitored.
+   * @param {object} [options.date] - options for configuring the path for storing the date.
+   * @param {string} options.date.path=modified.date - the path for storing the modified date.
+   * @param {object} options.date.options - property options to set (`type` will always be `Date`). `(e.g. {select: false})`
+   * @param {object} [options.by] - options for configuring the path for storing the modifier.
+   * @param {string} options.by.path=modified.by - the path for storing the document modifier.
+   * @param {string} options.by.ref - the reference model to use `(e.g. {by: {ref: 'ModelRefName'}})`
+   * @param {object} options.by.options - property options to set (if not a reference the `type` will always be `String`). `(e.g. {select: false})`
+  */
   options = _.merge({
     optionKey: 'modified',
     date: {

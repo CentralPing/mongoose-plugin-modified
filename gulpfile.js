@@ -1,3 +1,4 @@
+var fs = require('fs');
 var args = require('yargs').argv;
 var gulp = require('gulp');
 var gulpIf = require('gulp-if');
@@ -5,6 +6,9 @@ var debug = require('gulp-debug');
 var jshint = require('gulp-jshint');
 var todo = require('gulp-todo');
 var jasmine = require('gulp-jasmine');
+var gutil = require('gulp-util');
+var concat = require('gulp-concat');
+var jsdoc2md = require('gulp-jsdoc-to-markdown');
 
 var isDebug = !!args.debug;
 var isVerbose = !!args.verbose;
@@ -74,6 +78,16 @@ gulp.task('todo', function (done) {
       */
     }))
     .pipe(gulp.dest('./'));
+});
+
+gulp.task('docs', function() {
+  return gulp.src(config.paths.all)
+    .pipe(concat('README.md'))
+    .pipe(jsdoc2md({template: fs.readFileSync('./readme.hbs', 'utf8')}))
+    .on('error', function(err){
+      gutil.log('jsdoc2md failed:', err.message);
+    })
+    .pipe(gulp.dest('.'));
 });
 
 function testRunner(src) {
