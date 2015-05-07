@@ -37,19 +37,19 @@ gulp.task('lint', function () {
   return lint(glob);
 });
 
-gulp.task('lint:scripts', function (done) {
+gulp.task('lint:scripts', function () {
   return lint(config.paths.scripts);
 });
 
-gulp.task('lint:spec', function (done) {
+gulp.task('lint:spec', function () {
   return lint(config.paths.specs);
 });
 
-gulp.task('test', ['lint'], function (done) {
+gulp.task('test', ['lint'], function () {
   return testRunner(cliSrc || config.paths.specs);
 });
 
-gulp.task('watch', ['test'], function (done) {
+gulp.task('watch', ['test'], function () {
   // Check to ensure both the specified specs
   // and corresponding scripts are watched
   var glob = cliSrc ?
@@ -59,7 +59,7 @@ gulp.task('watch', ['test'], function (done) {
   return gulp.watch(glob, ['test']);
 });
 
-gulp.task('todo', function (done) {
+gulp.task('todo', function () {
   return gulp.src(config.paths.all)
     .pipe(todo({
       //fileName: 'todo.md',
