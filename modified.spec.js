@@ -1,3 +1,5 @@
+/* jshint node: true, jasmine: true */
+
 var mongoose = require('mongoose');
 var faker = require('faker');
 var modified = require('./modified');

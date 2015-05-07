@@ -1,3 +1,5 @@
+/* jshint node: true */
+
 var _ = require('lodash-node/modern');
 
 /**
