@@ -1,6 +1,6 @@
 {
   "name": "mongoose-plugin-modified",
-  "version": "1.4.0-rc3",
+  "version": "1.4.0",
   "description": "Mongoose.js plugin to capture document modification timestamp with optional user identifier",
   "main": "modified.js",
   "dependencies": {
