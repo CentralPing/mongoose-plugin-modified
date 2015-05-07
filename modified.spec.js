@@ -1,3 +1,4 @@
+'use strict';
 /* jshint node: true, jasmine: true */
 
 var mongoose = require('mongoose');
@@ -39,7 +40,7 @@ describe('Mongoose plugin: modified', function () {
     var schema;
 
     beforeEach(function () {
-      schema = UserSchema();
+      schema = userSchema();
     });
 
     it('should add `modified.date` and `modified.by` to the schema', function () {
@@ -85,7 +86,7 @@ describe('Mongoose plugin: modified', function () {
 
     it('should compile the model with the modified plugin', function () {
       var User;
-      var schema = UserSchema();
+      var schema = userSchema();
       schema.plugin(modified);
 
       User = model(schema);
@@ -111,7 +112,7 @@ describe('Mongoose plugin: modified', function () {
     var User;
 
     it('should compile the model with the modified plugin', function () {
-      var schema = UserSchema();
+      var schema = userSchema();
       schema.plugin(modified);
 
       User = model(schema);
@@ -119,7 +120,8 @@ describe('Mongoose plugin: modified', function () {
     });
 
     it('should update `modified.date` on subsequent saves', function (done) {
-      User(userData).save(function (err, user) {
+      var user = new User(userData);
+      user.save(function (err, user) {
         user.username = faker.internet.userName();
 
         user.save(function (err, user) {
@@ -133,10 +135,9 @@ describe('Mongoose plugin: modified', function () {
 
   describe('with specific paths', function () {
     var User;
-    var user;
 
     it('should compile the model with the modified plugin', function () {
-      var schema = UserSchema();
+      var schema = userSchema();
       schema.path('name.first').options.modified = true;
       schema.plugin(modified);
 
@@ -145,7 +146,8 @@ describe('Mongoose plugin: modified', function () {
     });
 
     it('should not update `modified.date` on saves without matched path modified', function (done) {
-      User(userData).save(function (err, user) {
+      var user = new User(userData);
+      user.save(function (err, user) {
         user.username = faker.internet.userName();
 
         user.save(function (err, user) {
@@ -156,7 +158,8 @@ describe('Mongoose plugin: modified', function () {
     });
 
     it('should not update `modified.date` on saves without matched path modified', function (done) {
-      User(userData).save(function (err, user) {
+      var user = new User(userData);
+      user.save(function (err, user) {
         user.name.last = faker.name.lastName();
 
         user.save(function (err, user) {
@@ -167,7 +170,8 @@ describe('Mongoose plugin: modified', function () {
     });
 
     it('should update `modified.date` on saves with matched path modified', function (done) {
-      User(userData).save(function (err, user) {
+      var user = new User(userData);
+      user.save(function (err, user) {
         user.name.first = faker.name.firstName();
 
         user.save(function (err, user) {
@@ -184,7 +188,7 @@ describe('Mongoose plugin: modified', function () {
     var userObj;
 
     it('should compile the model with the modified plugin', function () {
-      var schema = UserSchema();
+      var schema = userSchema();
       schema.path('name.first').options.modified = true;
       schema.plugin(modified, {by: {options: {required: true}}});
 
@@ -193,7 +197,8 @@ describe('Mongoose plugin: modified', function () {
     });
 
     it('should not require `modified.by` on new documents', function (done) {
-      User(userData).save(function (err, user) {
+      var user = new User(userData);
+      user.save(function (err, user) {
         user.username = faker.internet.userName();
 
         user.save(function (err, user) {
@@ -263,8 +268,8 @@ function model(name, schema) {
   return connection.model(name, schema, name);
 }
 
-function UserSchema() {
-  return Schema({
+function userSchema() {
+  return new Schema({
     username: String,
     password: String,
     name: {
