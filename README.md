@@ -9,6 +9,10 @@ A [mongoose.js](https://github.com/LearnBoost/mongoose/) plugin to capture docum
 
 *The modification date is updated pre-validation if a monitored field has been modified*
 
+## Installation
+
+`npm i --save mongoose-plugin-modified`
+
 ## API Reference
 **Example**  
 ```js
