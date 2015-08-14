@@ -1,13 +1,13 @@
 {
   "name": "mongoose-plugin-modified",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Mongoose.js plugin to capture document modification timestamp with optional user identifier",
   "main": "modified.js",
   "dependencies": {
     "lodash-node": "^3.8.0"
   },
   "devDependencies": {
-    "faker": "^2.1.2",
+    "faker": "^3.0.1",
     "gulp": "^3.8.11",
     "gulp-concat": "^2.5.2",
     "gulp-debug": "^2.0.1",
@@ -15,9 +15,9 @@
     "gulp-jasmine": "^2.0.1",
     "gulp-jsdoc-to-markdown": "^1.1.0",
     "gulp-jshint": "^1.10.0",
-    "gulp-todo": "^2.6.0",
+    "gulp-todo": "^3.2.0",
     "gulp-util": "^3.0.4",
-    "mongoose": "^4.0.2",
+    "mongoose": "^4.1.2",
     "yargs": "^3.8.0"
   },
   "peerDependencies": {
@@ -37,7 +37,7 @@
     "modified"
   ],
   "author": "Jason Cust <jason@centralping.com>",
-  "license": "Apache 2.0",
+  "license": "Apache License 2.0",
   "bugs": {
     "url": "https://github.com/CentralPing/mongoose-plugin-modified/issues"
   },

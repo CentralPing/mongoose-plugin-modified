@@ -55,7 +55,7 @@ module.exports = function lastModifiedPlugin(schema, options) {
   if (options.by.path) {
     if (options.by.options.required === true) {
       options.by.options.required = function requiredCheck(val) {
-        return !this.isNew && this.isModified(options.date.path);
+        return !this.isNew && this.isModified(options.date.path) && val === undefined;
       };
     }
 
@@ -70,12 +70,7 @@ module.exports = function lastModifiedPlugin(schema, options) {
   schema.pre('validate', function lastModifiedSave(next) {
     // check if at least one indicated field has been modified
     if (!this.isNew && paths.some(this.isModified, this)) {
-      if (options.by.options.required && !this.isModified(options.by.path)) {
-        this.invalidate(options.by.path, '{PATH} must be updated for document modification');
-      }
-      else {
-        this.set(options.date.path, Date.now());
-      }
+      this.set(options.date.path, Date.now());
     }
 
     return next();

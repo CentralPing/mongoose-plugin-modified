@@ -77,4 +77,4 @@ foo.save(); // foo.modified --> {date: 'Wed May 05 2015 12:05:50 GMT-0400 (EDT)'
 
 # License
 
-Apache 2.0
+Apache License 2.0

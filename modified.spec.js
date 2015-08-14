@@ -244,13 +244,26 @@ describe('Mongoose plugin: modified', function () {
       });
     });
 
-    it('should require `modified.by` to be modified on saves with matched path modified', function (done) {
+    it('should require `modified.by` on subsequent saves with matched path modified', function (done) {
       userObj.name.first = faker.name.firstName();
+      userObj.modified.by = undefined;
 
       userObj.save(function (err, user) {
         expect(err).not.toBe(null);
         expect(Object.keys(err.errors).sort()).toEqual(['modified.by']);
         expect(user).toBeUndefined();
+        done();
+      });
+    });
+
+    it('should update `modified.date` on subsequent saves with matched path modified', function (done) {
+      userObj.name.first = faker.name.firstName();
+      userObj.modified.by = faker.internet.userName();
+
+      userObj.save(function (err, user) {
+        expect(user.modified.date).toBeDefined();
+        expect(user.modified.date).toBeGreaterThan(user.created);
+        userObj = user;
         done();
       });
     });
