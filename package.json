@@ -37,7 +37,7 @@
     "modified"
   ],
   "author": "Jason Cust <jason@centralping.com>",
-  "license": "Apache License 2.0",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/CentralPing/mongoose-plugin-modified/issues"
   },
