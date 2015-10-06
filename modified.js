@@ -35,7 +35,12 @@ module.exports = function lastModifiedPlugin(schema, options) {
     by: {
       path: 'modified.by',
       ref: undefined,
-      options: {}
+      options: {
+        set: function markModifiedBy(v) {
+          this.markModified(options.by.path);
+          return v;
+        }
+      }
     }
   }, options || {});
 
@@ -55,7 +60,15 @@ module.exports = function lastModifiedPlugin(schema, options) {
   if (options.by.path) {
     if (options.by.options.required === true) {
       options.by.options.required = function requiredCheck(val) {
-        return !this.isNew && this.isModified(options.date.path) && val === undefined;
+        // Return true only if not a new document and val is undefined
+        return this.isNew ? false : this.isModified(options.date.path) ? val === undefined : false;
+      };
+
+      options.by.options.validate = {
+        validator: function validateModifiedBy(val) {
+          return this.isNew ? true : (this.isModified(options.date.path) ? this.isModified(options.by.path) : true);
+        },
+        msg: '{PATH} must be updated for document modification'
       };
     }
 
@@ -63,8 +76,8 @@ module.exports = function lastModifiedPlugin(schema, options) {
       options.by.ref ?
         {type: schema.constructor.Types.ObjectId, ref: options.by.ref} :
         {type: String},
-      options.by.options)
-    );
+      options.by.options
+    ));
   }
 
   schema.pre('validate', function lastModifiedSave(next) {
@@ -73,6 +86,6 @@ module.exports = function lastModifiedPlugin(schema, options) {
       this.set(options.date.path, Date.now());
     }
 
-    return next();
+    next();
   });
 };
