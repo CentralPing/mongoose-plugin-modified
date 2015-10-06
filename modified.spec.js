@@ -22,7 +22,7 @@ var userData = {
 };
 
 before(function (done) {
-  connection = mongoose.createConnection('mongodb://192.168.99.100:32780/unit_test');
+  connection = mongoose.createConnection('mongodb://localhost/unit_test');
   connection.once('connected', function () {
     done();
   });
