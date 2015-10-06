@@ -8,7 +8,7 @@ var gulpIf = require('gulp-if');
 var debug = require('gulp-debug');
 var jshint = require('gulp-jshint');
 var todo = require('gulp-todo');
-var jasmine = require('gulp-jasmine');
+var mocha = require('gulp-mocha');
 var gutil = require('gulp-util');
 var concat = require('gulp-concat');
 var jsdoc2md = require('gulp-jsdoc-to-markdown');
@@ -98,11 +98,17 @@ function testRunner(src) {
     src = [].concat([].slice.call(arguments));
   }
 
-  return gulp.src(src)
+  return gulp.src(src, {read: false})
     .pipe(gulpIf(isDebug, debug({title: 'test:'})))
-    .pipe(jasmine({
-      verbose: isVerbose,
-      includeStackTrace: isStackTrace
+    .pipe(mocha({
+      //ui: 'bdd',
+      //reporter: 'spec',
+      //globals: [],
+      //timeout: 2000,
+      //bail: false,
+      //ignoreLeaks: false,
+      //grep: '',
+      //require: []
     }));
 }
 
