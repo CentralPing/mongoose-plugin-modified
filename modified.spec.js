@@ -91,7 +91,7 @@ describe('Mongoose plugin: modified', function () {
       schema.plugin(modified);
 
       User = model(schema);
-      //expect(User).toEqual(jasmine.any(Function));
+      expect(User).to.be.an.instanceof(Function);
 
       user = new User(userData);
       expect(user instanceof User).to.be.true;
@@ -117,7 +117,7 @@ describe('Mongoose plugin: modified', function () {
       schema.plugin(modified);
 
       User = model(schema);
-      //expect(User).toEqual(jasmine.any(Function));
+      expect(User).to.be.an.instanceof(Function);
     });
 
     it('should update `modified.date` on subsequent saves', function (done) {
@@ -143,7 +143,7 @@ describe('Mongoose plugin: modified', function () {
       schema.plugin(modified);
 
       User = model(schema);
-      //expect(User).toEqual(jasmine.any(Function));
+      expect(User).to.be.an.instanceof(Function);
     });
 
     it('should not update `modified.date` on saves without matched path modified', function (done) {
@@ -194,7 +194,7 @@ describe('Mongoose plugin: modified', function () {
       schema.plugin(modified, {by: {options: {required: true}}});
 
       User = model(schema);
-      //expect(User).toEqual(jasmine.any(Function));
+      expect(User).to.be.an.instanceof(Function);
     });
 
     it('should not require `modified.by` on new documents', function (done) {
