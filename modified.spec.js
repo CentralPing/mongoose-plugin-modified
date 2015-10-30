@@ -5,6 +5,12 @@ var expect = require('chai').expect;
 var mongoose = require('mongoose');
 var faker = require('faker');
 var modified = require('./modified');
+
+var connectionString = 'mongodb://' +
+  (process.env.MONGO_HOST || 'localhost') +
+  (process.env.MONGO_PORT ? ':' + process.env.MONGO_PORT : '') +
+  '/unit_test';
+
 var Schema = mongoose.Schema;
 var connection;
 
@@ -22,7 +28,7 @@ var userData = {
 };
 
 before(function (done) {
-  connection = mongoose.createConnection('mongodb://localhost/unit_test');
+  connection = mongoose.createConnection(connectionString);
   connection.once('connected', function () {
     done();
   });
