@@ -27,18 +27,17 @@ var userData = {
   emails: [faker.internet.email()]
 };
 
+// Set Mongoose internal promise object to be the native Promise object
+mongoose.Promise = global.Promise;
+
 before(function (done) {
   connection = mongoose.createConnection(connectionString);
-  connection.once('connected', function () {
-    done();
-  });
+  connection.once('connected', done);
 });
 
 after(function (done) {
   connection.db.dropDatabase(function (err, result) {
-    connection.close(function () {
-      done();
-    });
+    connection.close(done);
   });
 });
 
@@ -107,10 +106,9 @@ describe('Mongoose plugin: modified', function () {
       expect(user.modified.date).to.be.undefined;
     });
 
-    it('should not set `modified.date` on initial save', function (done) {
-      user.save(function (err, user) {
+    it('should not set `modified.date` on initial save', function () {
+      return user.save().then(function (user) {
         expect(user.modified.date).to.be.undefined;
-        done();
       });
     });
   });
@@ -126,15 +124,15 @@ describe('Mongoose plugin: modified', function () {
       expect(User).to.be.an.instanceof(Function);
     });
 
-    it('should update `modified.date` on subsequent saves', function (done) {
+    it('should update `modified.date` on subsequent saves', function () {
       var user = new User(userData);
-      user.save(function (err, user) {
+
+      return user.save().then(function (user) {
         user.username = faker.internet.userName();
 
-        user.save(function (err, user) {
+        return user.save().then(function (user) {
           expect(user.modified.date).to.exist;
           expect(user.modified.date).to.be.above(user.created);
-          done();
         });
       });
     });
@@ -152,39 +150,39 @@ describe('Mongoose plugin: modified', function () {
       expect(User).to.be.an.instanceof(Function);
     });
 
-    it('should not update `modified.date` on saves without matched path modified', function (done) {
+    it('should not update `modified.date` on saves without matched path modified', function () {
       var user = new User(userData);
-      user.save(function (err, user) {
+
+      return user.save().then(function (user) {
         user.username = faker.internet.userName();
 
-        user.save(function (err, user) {
+        return user.save().then(function (user) {
           expect(user.modified.date).to.be.undefined;
-          done();
         });
       });
     });
 
-    it('should not update `modified.date` on saves without matched path modified', function (done) {
+    it('should not update `modified.date` on saves without matched path modified', function () {
       var user = new User(userData);
-      user.save(function (err, user) {
+
+      return user.save().then(function (user) {
         user.name.last = faker.name.lastName();
 
-        user.save(function (err, user) {
+        return user.save().then(function (user) {
           expect(user.modified.date).to.be.undefined;
-          done();
         });
       });
     });
 
-    it('should update `modified.date` on saves with matched path modified', function (done) {
+    it('should update `modified.date` on saves with matched path modified', function () {
       var user = new User(userData);
-      user.save(function (err, user) {
+
+      return user.save().then(function (user) {
         user.name.first = faker.name.firstName();
 
-        user.save(function (err, user) {
+        return user.save().then(function (user) {
           expect(user.modified.date).to.exist;
           expect(user.modified.date).to.be.above(user.created);
-          done();
         });
       });
     });
@@ -203,88 +201,82 @@ describe('Mongoose plugin: modified', function () {
       expect(User).to.be.an.instanceof(Function);
     });
 
-    it('should not require `modified.by` on new documents', function (done) {
+    it('should not require `modified.by` on new documents', function () {
       var user = new User(userData);
-      user.save(function (err, user) {
-        userObj = user;
-        expect(err).to.be.null;
+
+      return user.save().then(function (user) {
         expect(user.modified.date).to.be.undefined;
-        done();
+        userObj = user;
       });
     });
 
-    it('should not require `modified.by` on saves without matched path modified', function (done) {
+    it('should not require `modified.by` on saves without matched path modified', function () {
       userObj.name.last = faker.name.firstName();
 
-      userObj.save(function (err, user) {
-        expect(err).to.be.null;
+      return userObj.save().then(function (user) {
         expect(user.modified.date).to.be.undefined;
         userObj = user;
-        done();
       });
     });
 
-    it('should require `modified.by` on saves with matched path modified', function (done) {
+    it('should require `modified.by` on saves with matched path modified', function () {
       userObj.name.first = faker.name.firstName();
 
-      userObj.save(function (err, user) {
-        expect(err).not.to.be.null;
+      return userObj.save().then(function () {
+        // Shouldn't get here
+        throw new Error('Test failed');
+      }).catch(function (err) {
         expect(err.errors).to.have.all.keys(['modified.by']);
-        expect(user).to.be.undefined;
-        done();
       });
     });
 
-    it('should update `modified.date` on saves with matched path modified', function (done) {
+    it('should update `modified.date` on saves with matched path modified', function () {
       var date = new Date();
       userObj.name.first = faker.name.firstName();
       userObj.modified.by = faker.internet.userName();
 
-      userObj.save(function (err, user) {
+      return userObj.save().then(function (user) {
         expect(user.modified.date).to.exist;
         expect(user.modified.date).to.be.above(user.created);
         expect(user.modified.date).to.be.at.least(date);
         userObj = user;
-        done();
       });
     });
 
-    it('should require `modified.by` be set on subsequent saves with matched path modified', function (done) {
+    it('should require `modified.by` be set on subsequent saves with matched path modified', function () {
       userObj.name.first = faker.name.firstName();
 
-      userObj.save(function (err, user) {
-        expect(err).not.to.be.null;
+      return userObj.save().then(function () {
+        // Shouldn't get here
+        throw new Error('Test failed');
+      }).catch(function (err) {
         expect(err.errors).to.have.all.keys(['modified.by']);
-        expect(user).to.be.undefined;
-        done();
       });
     });
 
-    it('should update `modified.date` on subsequent saves with matched path modified', function (done) {
+    it('should update `modified.date` on subsequent saves with matched path modified', function () {
       var date = new Date();
       userObj.name.first = faker.name.firstName();
       userObj.modified.by = faker.internet.userName();
 
-      userObj.save(function (err, user) {
+      return userObj.save().then(function (user) {
         expect(user.modified.date).to.exist;
         expect(user.modified.date).to.be.above(user.created);
         expect(user.modified.date).to.be.at.least(date);
         userObj = user;
-        done();
       });
     });
 
-    it('should update `modified.date` on subsequent saves with matched path modified and same value for `modified.by`', function (done) {
+    it('should update `modified.date` on subsequent saves with matched path modified and same value for `modified.by`', function () {
       var date = new Date();
       userObj.name.first = faker.name.firstName();
       userObj.modified.by = userObj.modified.by;
 
-      return userObj.save(function (err, user) {
+      return userObj.save().then(function (user) {
         expect(user.modified.date).to.exist;
         expect(user.modified.date).to.be.above(user.created);
         expect(user.modified.date).to.be.at.least(date);
         userObj = user;
-        done();
       });
     });
   });
