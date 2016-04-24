@@ -6,7 +6,7 @@ mongoose-plugin-modified
 [![Code Climate for CentralPing/mongoose-plugin-modified](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified/badges/gpa.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified)
 [![Dependency Status for CentralPing/mongoose-plugin-modified](https://david-dm.org/CentralPing/mongoose-plugin-modified.svg)](https://david-dm.org/CentralPing/mongoose-plugin-modified)
 
-A [mongoose.js](https://github.com/Automatic/mongoose/) plugin to capture document updates with timestamp and optional user identifier.
+A [mongoose.js](https://github.com/Automattic/mongoose/) plugin to capture document updates with timestamp and optional user identifier.
 
 *The modification date is updated pre-validation if a monitored field has been modified*
 
