@@ -1,12 +1,12 @@
 mongoose-plugin-modified
 ====================
 
-[ ![Codeship Status for CentralPing/mongoose-plugin-modified](https://codeship.com/projects/0e9b0180-4b42-0132-3bff-2607b8604fef/status)](https://codeship.com/projects/46702)
+[![Codeship Status for CentralPing/mongoose-plugin-modified](https://codeship.com/projects/0e9b0180-4b42-0132-3bff-2607b8604fef/status)](https://codeship.com/projects/46702)
 [![Build Status](https://travis-ci.org/CentralPing/mongoose-plugin-modified.svg?branch=master)](https://travis-ci.org/CentralPing/mongoose-plugin-modified)
-[ ![Code Climate for CentralPing/mongoose-plugin-modified](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified/badges/gpa.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified)
-[ ![Dependency Status for CentralPing/mongoose-plugin-modified](https://david-dm.org/CentralPing/mongoose-plugin-modified.svg)](https://david-dm.org/CentralPing/mongoose-plugin-modified)
+[![Code Climate for CentralPing/mongoose-plugin-modified](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified/badges/gpa.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified)
+[![Dependency Status for CentralPing/mongoose-plugin-modified](https://david-dm.org/CentralPing/mongoose-plugin-modified.svg)](https://david-dm.org/CentralPing/mongoose-plugin-modified)
 
-A [mongoose.js](https://github.com/LearnBoost/mongoose/) plugin to capture document creation timestamp with optional user identifier.
+A [mongoose.js](https://github.com/Automatic/mongoose/) plugin to capture document updates with timestamp and optional user identifier.
 
 *The modification date is updated pre-validation if a monitored field has been modified*
 
@@ -22,6 +22,7 @@ var schema = Schema({...});
 schema.plugin(modifiedPlugin[, OPTIONS]);
 ```
 <a name="module_mongoose-plugin-modified..options"></a>
+
 ### mongoose-plugin-modified~options
 **Kind**: inner property of <code>[mongoose-plugin-modified](#module_mongoose-plugin-modified)</code>  
 
@@ -78,4 +79,4 @@ foo.save(); // foo.modified --> {date: 'Wed May 05 2015 12:05:50 GMT-0400 (EDT)'
 
 # License
 
-Apache License 2.0
+Apache 2.0
