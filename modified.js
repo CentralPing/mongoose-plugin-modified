@@ -1,7 +1,7 @@
 'use strict';
 /* jshint node: true */
 
-var _ = require('lodash-node/modern');
+var _ = require('lodash');
 
 /**
  * @module mongoose-plugin-modified
