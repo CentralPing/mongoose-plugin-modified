@@ -1,6 +1,8 @@
 mongoose-plugin-modified
 ====================
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/CentralPing/mongoose-plugin-modified.svg)](https://greenkeeper.io/)
+
 [![Codeship Status for CentralPing/mongoose-plugin-modified](https://codeship.com/projects/0e9b0180-4b42-0132-3bff-2607b8604fef/status)](https://codeship.com/projects/46702)
 [![Build Status](https://travis-ci.org/CentralPing/mongoose-plugin-modified.svg?branch=master)](https://travis-ci.org/CentralPing/mongoose-plugin-modified)
 [![Code Climate for CentralPing/mongoose-plugin-modified](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified/badges/gpa.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified)
