@@ -1,4 +1,13 @@
-languages:
-  JavaScript: true
-# exclude_paths:
+engines:
+  eslint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+ratings:
+  paths:
+  - "**.js"
+exclude_paths:
 - "*.spec.js"

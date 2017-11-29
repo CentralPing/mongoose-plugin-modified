@@ -24,7 +24,8 @@
     "mongoose": ">=4"
   },
   "scripts": {
-    "test": "gulp test"
+    "test": "gulp test",
+    "prepublish": "npm test && gulp docs"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,4 @@
 'use strict';
-/* jshint node: true */
 
 var fs = require('fs');
 var args = require('yargs').argv;
@@ -15,7 +14,6 @@ var jsdoc2md = require('gulp-jsdoc-to-markdown');
 
 var isDebug = !!args.debug;
 var isVerbose = !!args.verbose;
-var isStackTrace = !!args.stackTrace;
 var cliSrc = args.files;
 
 var config = {

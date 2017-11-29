@@ -1,5 +1,17 @@
 language: node_js
 node_js:
+- '9'
+- '8'
+- '8.9'
+- '8.8'
+- '8.7'
+- '8.6'
+- '8.5'
+- '8.4'
+- '8.3'
+- '8.2'
+- '8.1'
+- '8.0'
 - '7'
 - '6'
 - '6.9'
@@ -22,6 +34,14 @@ node_js:
 - '4.2'
 - '4.1'
 - '4.0'
+env:
+- CXX=g++-4.8
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
 services:
 - mongodb
 notifications:

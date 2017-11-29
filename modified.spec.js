@@ -1,5 +1,4 @@
 'use strict';
-/* jshint node: true, mocha: true, expr: true */
 
 var expect = require('chai').expect;
 var mongoose = require('mongoose');
@@ -299,7 +298,6 @@ describe('Mongoose plugin: modified', function () {
 
   describe('with `modified.date` on subdoc schemas', function () {
     var User;
-    var user;
 
     beforeEach(function () {
       var sub = subSchema();
