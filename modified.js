@@ -1,6 +1,6 @@
 'use strict';
 
-var _ = require('lodash');
+const _ = require('lodash');
 
 /**
  * @module mongoose-plugin-modified
@@ -12,8 +12,9 @@ schema.plugin(modifiedPlugin[, OPTIONS]);
 ```
 */
 
-module.exports = function lastModifiedPlugin(schema, options) {
-  /* jshint eqnull:true */
+module.exports = lastModifiedPlugin;
+
+function lastModifiedPlugin(schema, options) {
   /**
    * @param {object} [options]
    * @param {string} options.optionKey=modified - the path options key to mark paths for inclusion in monitoring for modification. If no paths are tagged, document modification is monitored.
@@ -41,12 +42,12 @@ module.exports = function lastModifiedPlugin(schema, options) {
         }
       }
     }
-  }, options || {});
+  }, options);
 
-  var paths = Object.keys(schema.paths).filter(function (path) {
-    var schemaType = schema.path(path);
+  const paths = Object.keys(schema.paths).filter(function (path) {
+    const schemaType = schema.path(path);
 
-    return schemaType.options && schemaType.options[options.optionKey];
+    return _.get(schemaType, `options.${options.optionKey}`);
   });
 
   // If no fields are flagged with the optionKey, monitor all fields
@@ -87,4 +88,4 @@ module.exports = function lastModifiedPlugin(schema, options) {
 
     next();
   });
-};
+}
