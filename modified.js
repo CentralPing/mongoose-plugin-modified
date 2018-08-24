@@ -82,7 +82,7 @@ function lastModifiedPlugin(schema, options) {
 
   schema.pre('validate', function lastModifiedSave(next) {
     // check if at least one indicated field has been modified
-    if (!this.isNew && paths.some(this.isModified, this)) {
+    if (!this.isNew && paths.some(value => this.isModified(value))) {
       this.set(options.date.path, Date.now());
     }
 

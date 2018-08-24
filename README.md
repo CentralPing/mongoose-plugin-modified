@@ -1,7 +1,6 @@
 mongoose-plugin-modified
 ====================
 
-[![Codeship Status for CentralPing/mongoose-plugin-modified](https://codeship.com/projects/0e9b0180-4b42-0132-3bff-2607b8604fef/status)](https://codeship.com/projects/46702)
 [![Build Status](https://travis-ci.org/CentralPing/mongoose-plugin-modified.svg?branch=master)](https://travis-ci.org/CentralPing/mongoose-plugin-modified)
 [![Code Climate for CentralPing/mongoose-plugin-modified](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified/badges/gpa.svg)](https://codeclimate.com/github/CentralPing/mongoose-plugin-modified)
 [![Dependency Status for CentralPing/mongoose-plugin-modified](https://david-dm.org/CentralPing/mongoose-plugin-modified.svg)](https://david-dm.org/CentralPing/mongoose-plugin-modified)
@@ -15,7 +14,7 @@ A [mongoose.js](https://github.com/Automattic/mongoose/) plugin to capture docum
 `npm i --save mongoose-plugin-modified`
 
 ## API Reference
-**Example**  
+**Example**
 ```js
 var modifiedPlugin = require('mongoose-plugin-modified');
 var schema = Schema({...});
@@ -24,7 +23,7 @@ schema.plugin(modifiedPlugin[, OPTIONS]);
 <a name="module_mongoose-plugin-modified..options"></a>
 
 ### mongoose-plugin-modified~options
-**Kind**: inner property of <code>[mongoose-plugin-modified](#module_mongoose-plugin-modified)</code>  
+**Kind**: inner property of <code>[mongoose-plugin-modified](#module_mongoose-plugin-modified)</code>
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
